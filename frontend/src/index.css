@@ -2,6 +2,8 @@
 
 @theme {
     --color-squad-blue:#211C84;
+    --color-squad-navy-blue:#211C84;
+    --color-squad-dark-light-blue:#000957;
 }
 
 #root {
