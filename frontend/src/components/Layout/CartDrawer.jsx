@@ -2,8 +2,16 @@ import React from 'react'
 import { useState } from 'react'
 import { HiX } from 'react-icons/hi'
 import CartContent from '../Cart/CartContent'
+import { useNavigate } from 'react-router-dom'
 
 const CartDrawer = ({drawerOpen, toggleCartDrawer}) => {
+
+    const navigate = useNavigate();
+
+    const handleCheckout = () => {
+        toggleCartDrawer();
+        navigate("/checkout");
+    }
 
   return (
     <div
@@ -26,7 +34,12 @@ const CartDrawer = ({drawerOpen, toggleCartDrawer}) => {
 
         {/* Checkout Button fixed at the bottom */}
         <div className='p-4 bg-white sticky bottom-0'>
-            <button className='w-full bg-squad-navy-blue text-white py-3 rounded-lg font-semibold hover:bg-squad-dark-light-blue transition cursor-pointer'>Checkout</button>
+            <button 
+                onClick={handleCheckout}
+                className='w-full bg-squad-navy-blue text-white py-3 rounded-lg font-semibold hover:bg-squad-dark-light-blue transition cursor-pointer'
+            >
+                Checkout
+            </button>
             <p className='text-sm tracking-tighter text-center mt-2 text-gray-500'>
                 Shipping, taxes & discounts calculated at checkout
             </p>
