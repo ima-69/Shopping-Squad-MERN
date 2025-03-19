@@ -58,7 +58,13 @@ const Navbar = () => {
             <div>
                 {/* Right - Icons */}
                 <div className='flex items-center space-x-4'>
-                    <Link to='#' className='hover:text-gray-900'>
+                    <Link
+                        to="/admin"
+                        className='block bg-squad-dark-light-blue px-3 py-1 rounded text-sm text-white'
+                    >
+                        Admin
+                    </Link>
+                    <Link to='/profile' className='hover:text-gray-900'>
                         <HiOutlineUser className='h-6 w-6 text-gray-700'/>
                     </Link>
                     <button onClick={toggleCartDrawer}
