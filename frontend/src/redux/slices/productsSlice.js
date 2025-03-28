@@ -55,10 +55,10 @@ export const updateProduct = createAsyncThunk(
     "products/updateProduct",
     async ({ id, productData }) => {
         const response = await axios.put(
-            `${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`, productData,
+            `${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`, 
             productData,
             {
-                Headers: {
+                headers: {
                     Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                 },
             }
@@ -74,7 +74,7 @@ export const fetchSimilarProducts = createAsyncThunk(
         const response = await axios.get(
             `${import.meta.env.VITE_BACKEND_URL}/api/products/similar/${id}`
         );
-        return response.data
+        return response.data;
     }
 );
 
@@ -83,7 +83,7 @@ const productsSlice = createSlice({
     initialState: {
         products: [],
         selectProduct: null, // Store the details of the single Product
-        similarProducts: [],
+        similarProducts: [], // Changed to store similar products
         loading: false,
         error: null,
         filters: {
@@ -102,7 +102,7 @@ const productsSlice = createSlice({
     },
     reducers: {
         setFilters: (state, action) => {
-            state.filters = {...state.filters, ...action.payload};
+            state.filters = { ...state.filters, ...action.payload };
         },
         clearFilters: (state) => {
             state.filters = {
@@ -159,10 +159,10 @@ const productsSlice = createSlice({
                 state.loading = false;
                 const updatedProduct = action.payload;
                 const index = state.products.findIndex(
-                    (product) => product._id === updateProduct._id
+                    (product) => product._id === updatedProduct._id // Fixed the reference to updatedProduct
                 );
                 if (index !== -1) {
-                    state.products[index] = updateProduct;
+                    state.products[index] = updatedProduct;
                 }
             })
             .addCase(updateProduct.rejected, (state, action) => {
@@ -177,12 +177,12 @@ const productsSlice = createSlice({
             })
             .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
                 state.loading = false;
-                state.products = action.payload
+                state.similarProducts = action.payload; // Correctly storing similar products
             })
             .addCase(fetchSimilarProducts.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
-            })
+            });
     },
 });
 

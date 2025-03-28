@@ -13,7 +13,7 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(registerUser({name, email, password}))
+        dispatch(registerUser({ name, email, password }))
     }
 
   return (
