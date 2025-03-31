@@ -1,88 +1,79 @@
-import React from 'react'
-import Hero from '../components/Layout/Hero'
-import GenderCollectionSection from '../components/Products/GenderCollectionSection'
-import NewArrivals from '../components/Products/NewArrivals'
-import ProductDetails from '../components/Products/ProductDetails'
-import ProductGrid from '../components/Products/ProductGrid'
-import { TbPlaceholder } from 'react-icons/tb'
-import FeaturedCollection from '../components/Products/FeaturedCollection'
-import FeaturedSection from '../components/Products/FeaturedSection'
-
-const placeholderProducts = [
-  {
-    _id:1,
-    name: "Product 1",
-    price: 100,
-    images: [{url: "https://picsum.photos/500/500?random=1"}]
-  },
-  {
-      _id:2,
-      name: "Product 2",
-      price: 100,
-      images: [{url: "https://picsum.photos/500/500?random=2"}]
-  },
-  {
-      _id:3,
-      name: "Product 3",
-      price: 100,
-      images: [{url: "https://picsum.photos/500/500?random=3"}]
-  },
-  {
-      _id:4,
-      name: "Product 4",
-      price: 100,
-      images: [{url: "https://picsum.photos/500/500?random=4"}]
-  },
-  {
-    _id:5,
-    name: "Product 5",
-    price: 100,
-    images: [{url: "https://picsum.photos/500/500?random=5"}]
-  },
-  {
-      _id:6,
-      name: "Product 6",
-      price: 100,
-      images: [{url: "https://picsum.photos/500/500?random=6"}]
-  },
-  {
-      _id:7,
-      name: "Product 7",
-      price: 100,
-      images: [{url: "https://picsum.photos/500/500?random=7"}]
-  },
-  {
-      _id:8,
-      name: "Product 8",
-      price: 100,
-      images: [{url: "https://picsum.photos/500/500?random=8"}]
-  },
-];
+import React, { useEffect, useState } from 'react';
+import Hero from '../components/Layout/Hero';
+import GenderCollectionSection from '../components/Products/GenderCollectionSection';
+import NewArrivals from '../components/Products/NewArrivals';
+import ProductDetails from '../components/Products/ProductDetails';
+import ProductGrid from '../components/Products/ProductGrid';
+import FeaturedCollection from '../components/Products/FeaturedCollection';
+import FeaturedSection from '../components/Products/FeaturedSection';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsByFilters } from '../redux/slices/productsSlice';
+import axios from 'axios';
 
 const Home = () => {
+
+  const dispatch = useDispatch();
+  const { products, loading, error } = useSelector((state) => state.products);
+  const [bestSellerProduct, setBestSellerProduct] = useState(null);
+  const [bestSellerState, setBestSellerState] = useState({
+    loading: true,
+    error: null,
+  });
+
+  useEffect(() => {
+    // Fetch products for a specific collection
+    dispatch(
+      fetchProductsByFilters({
+        gender: "Women",
+        category: "Bottom Wear",
+        Limit: 8,
+      })
+    );
+
+    // Fetch best seller product
+    const fetchBestSeller = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`
+        );
+        console.log('Best Seller Data:', response.data); // Check if you're receiving data
+        setBestSellerProduct(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchBestSeller();
+  }, [dispatch]);
+
+  
+
   return (
     <div>
-        <Hero/>
-        <GenderCollectionSection/>
-        <NewArrivals/>
+      <Hero />
+      <GenderCollectionSection />
+      <NewArrivals />
 
-        {/* Best Seller */}
-        <h2 className='text-3xl text-center font-bold mb-4'>
-          Best Seller
+      {/* Best Seller */}
+      <h2 className="text-3xl text-center font-bold mb-4">
+        Best Seller
+      </h2>
+      {bestSellerProduct ? (
+        <ProductDetails productId={bestSellerProduct._id}/>
+      ) : (
+        <div className="text-center">Loading best seller product ...</div>
+      )}
+
+      <div className="container mx-auto">
+        <h2 className="text-3xl text-center font-bold mb-4">
+          Top Wears for Women
         </h2>
-        <ProductDetails/>
+        <ProductGrid products={products} loading={loading} error={error} />
+      </div>
 
-        <div className='container mx-auto'>
-          <h2 className='text-3xl text-center font-bold mb-4'>
-            Top Wears for Women
-          </h2>
-          <ProductGrid product={placeholderProducts} />
-        </div>
-
-        <FeaturedCollection/>
-        <FeaturedSection/>
+      <FeaturedCollection />
+      <FeaturedSection />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

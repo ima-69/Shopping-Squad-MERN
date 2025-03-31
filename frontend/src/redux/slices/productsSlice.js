@@ -177,7 +177,7 @@ const productsSlice = createSlice({
             })
             .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
                 state.loading = false;
-                state.similarProducts = action.payload; // Correctly storing similar products
+                state.similarProducts = action.payload; 
             })
             .addCase(fetchSimilarProducts.rejected, (state, action) => {
                 state.loading = false;
