@@ -5,11 +5,18 @@ import SearchBar from './SearchBar'
 import CartDrawer from '../Layout/CartDrawer'
 import { useState } from 'react'
 import { HiX } from 'react-icons/hi'
+import { useSelector } from 'react-redux'
 
 const Navbar = () => {
 
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [navDrawerOpen, setNavDrawerOpen] = useState(false);
+    const { cart } = useSelector((state) => state.cart);
+
+    const cartItemCount = cart?.products?.reduce(
+        (total, product) => total + product.quantity,
+        0
+    ) || 0;
 
     const toggleNavDrawer = () => {
         setNavDrawerOpen(!navDrawerOpen);
@@ -71,9 +78,12 @@ const Navbar = () => {
                      className='relative hover:text-black'
                     >
                         <HiOutlineShoppingBag className='h-6 w-6 text-gray-700 cursor-pointer'/>
-                        <span className='absolute -top-1 -right-2 bg-squad-blue text-white rounded-full px-1 text-xs cursor-pointer'>
-                            4
-                        </span>
+                        {cartItemCount > 0 && (
+                            <span className='absolute -top-1 -right-2 bg-squad-blue text-white rounded-full px-1 text-xs cursor-pointer'>
+                                {cartItemCount}
+                            </span>
+                        )}
+
                     </button>
                     {/* Search */}
                     <div className='overflow-hidden cursor-pointer'> 
