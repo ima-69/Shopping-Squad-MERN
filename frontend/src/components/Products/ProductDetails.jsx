@@ -6,16 +6,22 @@ import ProductGrid from './ProductGrid';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductDetails, fetchSimilarProducts } from '../../redux/slices/productsSlice';
+import { addToCart } from '../../redux/slices/cartSlice';
 
 
 
-const ProductDetails = ({ productId }) => {
+const ProductDetails = ({ productId}) => {
 
     const { id } = useParams();
     const dispatch = useDispatch();
-    const { selectedProduct, loading, error, similarProducts } = useSelector(
-        (state) => state.products
-    );
+    // const { selectedProduct, loading, error, similarProducts } = useSelector(
+    //     (state) => state.products.selectProduct
+    // );
+    const selectedProduct = useSelector((state) => state.products.selectProduct);
+    const similarProducts = useSelector((state) => state.products.similarProducts);
+    const loading = useSelector((state) => state.products.loading);
+    const error = useSelector((state) => state.products.error);
+
     const { user, guestId } = useSelector((state) => state.auth);
 
     const [mainImage, setMainImage] = useState(null);
@@ -32,6 +38,8 @@ const ProductDetails = ({ productId }) => {
             dispatch(fetchSimilarProducts({id:productFetchId}));
         }
     }, [dispatch, productFetchId]);
+
+    
 
     useEffect(() => {
         if (selectedProduct?.images?.length > 0){
@@ -74,13 +82,35 @@ const ProductDetails = ({ productId }) => {
         });
     };
 
-    if (loading) {
-        return <p>Loading...</p>
-    }
+    // if (loading) {
+    //     return <p>Loading...</p>
+    // }
 
-    if (error) {
-        return <p>Error: {error}</p>
-    }
+    // if (error) {
+    //     return <p>Error: {error}</p>
+    // }
+
+    const state = useSelector((state) => state);
+    console.log("Full Redux State:", state);
+
+
+    // if (loading) {
+    //     return <p>Loading...</p>;
+    // }
+    
+    // if (error) {
+    //     return <p>Error: {error}</p>;
+    // }
+    
+    // if (!selectedProduct || !selectedProduct._id) {
+    //     return <p>No product found</p>;
+    // }
+
+    useEffect(() => {
+        console.log("Selected Product:", selectedProduct);
+    }, [selectedProduct]);
+    
+    
 
   return (
     <div className='p-6'>
@@ -131,12 +161,20 @@ const ProductDetails = ({ productId }) => {
                     </h1>
 
                     <p className='text-lg text-gray-600 mb-1 line-through'>
+                        {selectedProduct.discountPrice && `$ ${selectedProduct.price}`}
+                    </p>
+
+                    <p className='text-xl text-gray-500 mb-2'>
+                        $ {selectedProduct.discountPrice || selectedProduct.price}
+                    </p>
+
+                    {/* <p className='text-lg text-gray-600 mb-1 line-through'>
                         $ {selectedProduct.originalPrice && `${selectedProduct.originalPrice}`}
                     </p>
 
                     <p className='text-xl text-gray-500 mb-2'>
                         $ {selectedProduct.price}
-                    </p>
+                    </p> */}
 
                     <p className="text-gray-600 mb-4">
                         {selectedProduct.description}
@@ -222,7 +260,7 @@ const ProductDetails = ({ productId }) => {
                 <h2 className='text-2xl text-center font-medium mb-4'>
                     You May Also Like
                 </h2>
-                <ProductGrid product={similarProducts} loading={loading} error={error}/>
+                <ProductGrid products={similarProducts} loading={loading} error={error}/>
             </div>
         </div>
         )}

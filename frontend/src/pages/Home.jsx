@@ -56,12 +56,16 @@ const Home = () => {
       {/* Best Seller */}
       <h2 className="text-3xl text-center font-bold mb-4">
         Best Seller
+
+        {/* {bestSellerProduct._id} */}
       </h2>
       {bestSellerProduct ? (
         <ProductDetails productId={bestSellerProduct._id}/>
       ) : (
         <div className="text-center">Loading best seller product ...</div>
       )}
+
+      
 
       <div className="container mx-auto">
         <h2 className="text-3xl text-center font-bold mb-4">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const ProductGrid = ({ product, loading, error }) => {
+const ProductGrid = ({ products, loading, error }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center">
@@ -16,13 +16,13 @@ const ProductGrid = ({ product, loading, error }) => {
     return <p className="text-red-500 text-center">Error: {error}</p>;
   }
 
-  if (!product || product.length === 0) {
+  if (!products || products.length === 0) {
     return <p className="text-gray-500 text-center">No products found.</p>;
   }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {product.map((product) => (
+      {products.map((product) => (
         <Link key={product._id} to={`/product/${product._id}`} className="block">
           <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
             <div className="w-full h-96 mb-4 relative">
