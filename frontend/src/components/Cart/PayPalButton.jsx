@@ -13,7 +13,7 @@ const PayPalButton = ( { amount, onSuccess, onError } ) => {
             createOrder={(data, actions) => {
                 console.log("Creating order", amount);  // Debugging line to check amount
                 return actions.order.create({
-                    purchase_units: [{ amount: { value: amount } }]  // Fixed typo here: 'amount' instead of 'amout'
+                    purchase_units: [{ amount: { value: parseFloat(amount).toFixed(2) } }]  // Fixed typo here: 'amount' instead of 'amout'
                 });
             }}
             onApprove={(data, actions) =>{
