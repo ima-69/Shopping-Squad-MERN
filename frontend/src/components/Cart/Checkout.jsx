@@ -33,19 +33,44 @@ const Checkout = () => {
     const handleCreateCheckout = async (e) => {
         e.preventDefault();
         if (cart && cart.products.length > 0) {
-            const res = await dispatch(
+            
+            const checkoutItems = cart.products.map((item) => ({
+                ...item,
+                image: item.image || "https://via.placeholder.com/150", 
+            }));
+    
+            const res = dispatch(
                 createCheckout({
-                    checkoutItems: cart.products,
+                    checkoutItems,
                     shippingAddress,
                     paymentMethod: "Paypal",
                     totalPrice: cart.totalPrice,
                 })
             );
+    
             if (res.payload && res.payload._id) {
-                setCheckoutId(res.payload._id); // Set checkout ID if checkout was successfull
+                setCheckoutId(res.payload._id);
             }
         }
     };
+    
+
+    // const handleCreateCheckout = async (e) => {
+    //     e.preventDefault();
+    //     if (cart && cart.products.length > 0) {
+    //         const res = dispatch(
+    //             createCheckout({
+    //                 checkoutItems: cart.products,
+    //                 shippingAddress,
+    //                 paymentMethod: "Paypal",
+    //                 totalPrice: cart.totalPrice,
+    //             })
+    //         );
+    //         if (res.payload && res.payload._id) {
+    //             setCheckoutId(res.payload._id); // Set checkout ID if checkout was successfull
+    //         }
+    //     }
+    // };
 
     const handlePaymentSuccess = async (details) => {
         try {
