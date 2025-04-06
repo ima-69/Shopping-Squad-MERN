@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { use } from 'react'
 import { Link } from 'react-router-dom'
 import { HiOutlineShoppingBag, HiOutlineUser, HiMenuAlt3} from 'react-icons/hi'
 import SearchBar from './SearchBar'
@@ -12,6 +12,7 @@ const Navbar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [navDrawerOpen, setNavDrawerOpen] = useState(false);
     const { cart } = useSelector((state) => state.cart);
+    const { user } = useSelector((state) => state.auth);
 
     const cartItemCount = cart?.products?.reduce(
         (total, product) => total + product.quantity,
@@ -65,12 +66,16 @@ const Navbar = () => {
             <div>
                 {/* Right - Icons */}
                 <div className='flex items-center space-x-4'>
-                    <Link
+                    
+                    { user && user.role === 'admin' && (
+                        <Link
                         to="/admin"
                         className='block bg-squad-dark-light-blue px-3 py-1 rounded text-sm text-white'
                     >
                         Admin
                     </Link>
+                    )}
+
                     <Link to='/profile' className='hover:text-gray-900'>
                         <HiOutlineUser className='h-6 w-6 text-gray-700'/>
                     </Link>
