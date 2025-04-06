@@ -1,4 +1,4 @@
-// product.js:
+// product.js
 
 const products = [
   {
