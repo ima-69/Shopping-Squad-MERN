@@ -34,7 +34,7 @@ const Checkout = () => {
     if (cart && cart.products.length > 0) {
       const res = await dispatch(
         createCheckout({
-          checkoutItems: cart.products,
+          CheckoutItems: cart.products,
           shippingAddress,
           paymentMethod: "Paypal",
           totalPrice: cart.totalPrice,

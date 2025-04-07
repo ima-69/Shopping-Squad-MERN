@@ -130,9 +130,9 @@ const NewArrivals = () => {
               className="w-full h-[500px] object-cover rounded-lg"
               draggable="false"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md text-white p-4 rounded-b-lg">
+            <div className="absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md text-gray-400 p-4 rounded-b-lg">
               <Link to={`/product/${product._id}`} className="block">
-                <h4 className="font-medium">{product.name}</h4>
+                <h4 className="font-medium ">{product.name}</h4>
                 <p className="mt-1">${product.price}</p>
               </Link>
             </div>
