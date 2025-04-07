@@ -71,7 +71,7 @@ const OrderDetailsPage = () => {
                         <p>Shipping Method: {orderDetails.shippingMethod}</p>
                         <p>
                             Address: {" "}
-                            {`${orderDetails.ShippingAddress.city}, ${orderDetails.ShippingAddress.country}`}
+                            {`${orderDetails.shippingAddress.city}, ${orderDetails.shippingAddress.country}`}
                         </p>
                     </div>
                 </div>
