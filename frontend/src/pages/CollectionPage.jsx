@@ -70,7 +70,7 @@ const CollectionPage = () => {
             < SortOptions />
 
             {/* Product Grid */}
-            < ProductGrid product={products} loading={loading} error={error}/>
+            < ProductGrid products={products} loading={loading} error={error}/>
         </div>
     </div>
   )
