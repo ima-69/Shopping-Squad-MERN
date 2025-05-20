@@ -4,6 +4,9 @@ import login from "../assets/login.webp";
 import { loginUser } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { mergeCart } from "../redux/slices/cartSlice";
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +17,6 @@ const Login = () => {
   const { user, guestId, loading } = useSelector((state) => state.auth);
   const { cart } = useSelector((state) => state.cart);
 
-  // Get redirect parameter and check if it's checkout or something
   const redirect = new URLSearchParams(location.search).get("redirect") || "/";
   const isCheckoutRedirect = redirect.includes("checkout");
 
@@ -35,6 +37,39 @@ const Login = () => {
     dispatch(loginUser({ email, password }));
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/google-auth`,
+        {
+          token: credentialResponse.credential,
+          email: decoded.email,
+          name: decoded.name,
+        }
+      );
+
+      localStorage.setItem('userInfo', JSON.stringify(response.data.user));
+      localStorage.setItem('userToken', response.data.token);
+
+      dispatch({ type: 'auth/loginSuccess', payload: response.data.user });
+
+      if (cart?.products.length > 0 && guestId) {
+        dispatch(mergeCart({ guestId, user: response.data.user })).then(() => {
+          navigate(isCheckoutRedirect ? '/checkout' : '/');
+        });
+      } else {
+        navigate(isCheckoutRedirect ? '/checkout' : '/');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.log('Google login failed');
+  };
+
   return (
     <div className="flex">
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12">
@@ -43,7 +78,7 @@ const Login = () => {
           className="w-full max-w-md bg-white p-8 rounded-lg border shadow-sm"
         >
           <div className="flex justify-center mb-6">
-            <h2 className="text-xl font-medium">Rabbit</h2>
+            <h2 className="text-xl font-medium">FASHION SQUAD</h2>
           </div>
           <h2 className="text-2xl font-bold text-center mb-6">Hey there! 👋🏻</h2>
           <p className="text-center mb-6">
@@ -75,6 +110,22 @@ const Login = () => {
           >
             {loading ? "loading..." : "Sign In"}
           </button>
+
+          {/* Google Login Button */}
+          <div className="mt-4">
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                useOneTap
+                text="continue_with"
+                shape="rectangular"
+                size="large"
+                width="100%"
+              />
+            </GoogleOAuthProvider>
+          </div>
+
           <p className="mt-6 text-center text-sm">
             Don't have an account?{" "}
             <Link
@@ -99,4 +150,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;

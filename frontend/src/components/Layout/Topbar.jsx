@@ -6,23 +6,23 @@ import {RiTwitterXLine} from 'react-icons/ri'
 const Topbar = () => {
   return (
     <div className="bg-squad-blue text-white">
-        <div className="container mx-auto flex justify-between items-center py-3 px-4">
-            <div className='hidden md:flex items-center space-x-4'>
-                <a href="#" className="hover:text-gray-300">
-                    <TbBrandMeta className="h-5 w-5"/>
+        <div className="container mx-auto flex justify-between items-center py-2.5 px-4">
+            <div className='hidden md:flex items-center space-x-5'>
+                <a href="#" className="hover:text-white hover:bg-white/20 p-1.5 rounded-full transition-all duration-300 flex items-center justify-center">
+                    <TbBrandMeta className="h-4.5 w-4.5"/>
                 </a>
-                <a href="#" className="hover:text-gray-300">
-                    <IoLogoInstagram className="h-5 w-5"/>
+                <a href="#" className="hover:text-white hover:bg-white/20 p-1.5 rounded-full transition-all duration-300 flex items-center justify-center">
+                    <IoLogoInstagram className="h-4.5 w-4.5"/>
                 </a>
-                <a href="#" className="hover:text-gray-300">
-                    <RiTwitterXLine className="h-5 w-5"/>
+                <a href="#" className="hover:text-white hover:bg-white/20 p-1.5 rounded-full transition-all duration-300 flex items-center justify-center">
+                    <RiTwitterXLine className="h-4.5 w-4.5"/>
                 </a>
             </div>
-            <div className='text-sm text-center flex-grow'>
+            <div className='text-sm font-medium text-center flex-grow tracking-wide'>
                 <span>We ship worldwide - Fast and reliable shipping!</span>
             </div>
             <div className='text-sm hidden md:block'>
-                <a href='tel:+1234567890' className='hover:text-gray-300'>
+                <a href='tel:+1234567890' className='hover:text-white hover:underline transition-all duration-200 font-medium'>
                     +1 (234) 567-890
                 </a>
             </div>

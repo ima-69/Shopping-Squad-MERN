@@ -12,10 +12,64 @@ const subscribeRoute = require("./routes/subscribeRoute");
 const adminRoutes = require("./routes/adminRoutes");
 const productAdminRoutes = require("./routes/productAdminRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
+const session = require('express-session');
+const passport = require('passport');
+
+require('./config/auth'); 
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Add Google auth routes
+app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+app.get(
+  '/api/auth/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: '/login',
+    session: false, // We'll use JWT instead of sessions
+  }),
+  (req, res) => {
+    // Generate JWT token
+    const payload = { user: { id: req.user._id, role: req.user.role } };
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '48h' },
+      (err, token) => {
+        if (err) throw err;
+        
+        // Redirect to frontend with token
+        res.redirect(
+          `${process.env.FRONTEND_URL}/auth/google/callback?token=${token}&user=${encodeURIComponent(
+            JSON.stringify({
+              _id: req.user._id,
+              name: req.user.name,
+              email: req.user.email,
+              role: req.user.role,
+            })
+          )}`
+        );
+      }
+    );
+  }
+);
 
 dotenv.config();
 

@@ -2,31 +2,36 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
-        name: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-            trim: true,
-            match: [/.+\@.+\..+/, "Please enter a valid email address"],
-        },
-        password: {
-            type: String,
-            required: true,
-            minLenghth: 6,
-        },
-        role: {
-            type: String,
-            enum: ["customer","admin"],
-            default: "customer",
-        },
+    name: {
+        type: String,
+        required: true,
+        trim: true,
     },
-    { timestamps: true }
-);
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        match: [/.+\@.+\..+/, "Please enter a valid email address"],
+    },
+    password: {
+        type: String,
+        minLenghth: 6,
+    },
+    role: {
+        type: String,
+        enum: ["customer","admin"],
+        default: "customer",
+    },
+    googleId: {
+        type: String,
+    },
+    provider: {
+        type: String,
+        enum: ["local", "google"],
+        default: "local",
+    },
+}, { timestamps: true });
 
 //Password Hash middleware
 userSchema.pre("save", async function (next){

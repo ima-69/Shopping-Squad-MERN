@@ -73,7 +73,7 @@ router.post("/login", async (req,res) => {
          jwt.sign(
              payload, 
              process.env.JWT_SECRET,
-             { expiresIn: "40h" },
+             { expiresIn: "48h" },
              (err, token) => {
                  if (err) throw err;
  
@@ -101,6 +101,58 @@ router.post("/login", async (req,res) => {
 // @access Private
 router.get("/profile", protect,  async (req, res) => {
    res.json(req.user); 
+});
+
+// @route POST /api/users/google-auth
+// @desc Authenticate user with Google
+// @access Public
+router.post('/google-auth', async (req, res) => {
+  const { token, email, name } = req.body;
+
+  try {
+    // Verify the token with Google (optional additional verification)
+    // In production, you might want to verify the token with Google's API
+    
+    // Check if user exists
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create new user if they don't exist
+      user = new User({
+        name,
+        email,
+        provider: 'google',
+        googleId: token, // Or extract Google ID from token
+      });
+      await user.save();
+    }
+
+    // Create JWT Payload
+    const payload = { user: { id: user._id, role: user.role } };
+
+    // Sign and return the token along with user data
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '48h' },
+      (err, token) => {
+        if (err) throw err;
+
+        res.json({
+          user: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          },
+          token,
+        });
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  }
 });
 
 module.exports = router;
