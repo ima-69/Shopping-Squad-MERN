@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import Hero from '../components/Layout/Hero';
-import GenderCollectionSection from '../components/Products/GenderCollectionSection';
-import NewArrivals from '../components/Products/NewArrivals';
-import ProductDetails from '../components/Products/ProductDetails';
-import ProductGrid from '../components/Products/ProductGrid';
-import FeaturedCollection from '../components/Products/FeaturedCollection';
-import FeaturedSection from '../components/Products/FeaturedSection';
+import React, { useEffect, useState } from "react";
+import Hero from "../components/Layout/Hero";
+import GenderCollectionSection from "../components/Products/GenderCollectionSection";
+import NewArrivals from "../components/Products/NewArrivals";
+import ProductDetails from "../components/Products/ProductDetails";
+import ProductGrid from "../components/Products/ProductGrid";
+import FeaturedCollection from "../components/Products/FeaturedCollection";
+import FeaturedSection from "../components/Products/FeaturedSection";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductsByFilters } from '../redux/slices/productsSlice';
-import axios from 'axios';
+import { fetchProductsByFilters } from "../redux/slices/productsSlice";
+import axios from "axios";
 
 const Home = () => {
-
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products);
+
   const [bestSellerProduct, setBestSellerProduct] = useState(null);
   const [bestSellerState, setBestSellerState] = useState({
     loading: true,
@@ -21,7 +21,7 @@ const Home = () => {
   });
 
   useEffect(() => {
-    // Fetch products for a specific collection
+    // Fetch products for specific collection (Women, Top Wear)
     dispatch(
       fetchProductsByFilters({
         gender: "Women",
@@ -32,51 +32,75 @@ const Home = () => {
 
     // Fetch best seller product
     const fetchBestSeller = async () => {
+      setBestSellerState({ loading: true, error: null });
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`
         );
-        console.log('Best Seller Data:', response.data); // Check if you're receiving data
         setBestSellerProduct(response.data);
+        setBestSellerState({ loading: false, error: null });
       } catch (error) {
-        console.error(error);
+        setBestSellerState({
+          loading: false,
+          error: "Failed to load best seller product. Please try again later.",
+        });
+        console.error("Best Seller Fetch Error:", error);
       }
     };
     fetchBestSeller();
   }, [dispatch]);
 
-  
-
   return (
-    <div>
+    <main>
       <Hero />
-      <GenderCollectionSection />
-      <NewArrivals />
 
-      {/* Best Seller */}
-      <h2 className="text-3xl text-center font-bold mb-4">
-        Best Seller
+      <div className="my-0">
+        <GenderCollectionSection />
+      </div>
 
-        {/* {bestSellerProduct._id} */}
-      </h2>
-      {bestSellerProduct ? (
-        <ProductDetails productId={bestSellerProduct._id}/>
-      ) : (
-        <div className="text-center">Loading best seller product ...</div>
-      )}
+      <div className="my-0">
+        <NewArrivals />
+      </div>
 
-      
+      {/* Best Seller Section */}
+      <section className="my-0 max-w-6xl mx-auto px-4">
+        <h2 className="text-4xl font-extrabold text-center mb-8 tracking-tight">
+          Best Seller
+        </h2>
 
-      <div className="container mx-auto">
-        <h2 className="text-3xl text-center font-bold mb-4">
+        {bestSellerState.loading && (
+          <p className="text-center text-gray-500 text-lg">
+            Loading best seller product...
+          </p>
+        )}
+
+        {bestSellerState.error && (
+          <p className="text-center text-red-600 font-semibold mb-6">
+            {bestSellerState.error}
+          </p>
+        )}
+
+        {bestSellerProduct && !bestSellerState.loading && !bestSellerState.error && (
+          <ProductDetails productId={bestSellerProduct._id} />
+        )}
+      </section>
+
+      {/* Women’s Top Wear */}
+      <section className="my-0 max-w-7xl mx-auto px-4">
+        <h2 className="text-4xl font-extrabold text-center mb-6 tracking-tight">
           Top Wears for Women
         </h2>
         <ProductGrid products={products} loading={loading} error={error} />
-      </div>
+      </section>
 
-      <FeaturedCollection />
-      <FeaturedSection />
-    </div>
+      {/* Featured Sections */}
+      <div className="my-0">
+        <FeaturedCollection />
+      </div>
+      <div className="my-0">
+        <FeaturedSection />
+      </div>
+    </main>
   );
 };
 

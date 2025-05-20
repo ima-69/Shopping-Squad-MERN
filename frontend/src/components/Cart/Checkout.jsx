@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PayPalButton from "./PayPalButton";
+import { HiOutlineMail, HiOutlineUser, HiOutlinePhone } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
+import PayPalButton from "./PayPalButton";
 import { createCheckout } from "../../redux/slices/checkoutSlice";
 import axios from "axios";
 
@@ -22,7 +23,6 @@ const Checkout = () => {
     phone: "",
   });
 
-  // Ensure cart is loaded before proceeding
   useEffect(() => {
     if (!cart || !cart.products || cart.products.length === 0) {
       navigate("/");
@@ -41,14 +41,14 @@ const Checkout = () => {
         })
       );
       if (res.payload && res.payload._id) {
-        setCheckoutId(res.payload._id); // Set checkout ID if chekout was successful
+        setCheckoutId(res.payload._id);
       }
     }
   };
 
   const handlePaymentSuccess = async (details) => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/pay`,
         { paymentStatus: "paid", paymentDetails: details },
         {
@@ -57,8 +57,7 @@ const Checkout = () => {
           },
         }
       );
-
-      await handleFinalizeCheckout(checkoutId); // Finalize checkout if payment is successful
+      await handleFinalizeCheckout(checkoutId);
     } catch (error) {
       console.error(error);
     }
@@ -92,50 +91,59 @@ const Checkout = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking-tighter">
       {/* Left Section */}
-      <div className="bg-white rounded-lg p-6">
+      <div className="bg-white rounded-lg p-6 shadow-md">
         <h2 className="text-2xl uppercase mb-6">Checkout</h2>
         <form onSubmit={handleCreateCheckout}>
           <h3 className="text-lg mb-4">Contact Details</h3>
           <div className="mb-4">
             <label className="block text-gray-700">Email</label>
-            <input
-              type="email"
-              value={user ? user.email : ""}
-              className="w-full p-2 border rounded"
-              disabled
-            />
+            <div className="flex items-center border rounded p-2">
+              <HiOutlineMail className="text-gray-500 mr-2" />
+              <input
+                type="email"
+                value={user ? user.email : ""}
+                className="w-full outline-none"
+                disabled
+              />
+            </div>
           </div>
           <h3 className="text-lg mb-4">Delivery</h3>
           <div className="mb-4 grid grid-cols-2 gap-4">
             <div>
               <label className="block text-gray-700">First Name</label>
-              <input
-                type="text"
-                value={shippingAddress.firstName}
-                onChange={(e) =>
-                  setShippingAddress({
-                    ...shippingAddress,
-                    firstName: e.target.value,
-                  })
-                }
-                className="w-full p-2 border rounded"
-                required
-              />
+              <div className="flex items-center border rounded p-2">
+                <HiOutlineUser className="text-gray-500 mr-2" />
+                <input
+                  type="text"
+                  value={shippingAddress.firstName}
+                  onChange={(e) =>
+                    setShippingAddress({
+                      ...shippingAddress,
+                      firstName: e.target.value,
+                    })
+                  }
+                  className="w-full outline-none"
+                  required
+                />
+              </div>
             </div>
             <div>
               <label className="block text-gray-700">Last Name</label>
-              <input
-                type="text"
-                value={shippingAddress.lastName}
-                onChange={(e) =>
-                  setShippingAddress({
-                    ...shippingAddress,
-                    lastName: e.target.value,
-                  })
-                }
-                className="w-full p-2 border rounded"
-                required
-              />
+              <div className="flex items-center border rounded p-2">
+                <HiOutlineUser className="text-gray-500 mr-2" />
+                <input
+                  type="text"
+                  value={shippingAddress.lastName}
+                  onChange={(e) =>
+                    setShippingAddress({
+                      ...shippingAddress,
+                      lastName: e.target.value,
+                    })
+                  }
+                  className="w-full outline-none"
+                  required
+                />
+              </div>
             </div>
           </div>
           <div className="mb-4">
@@ -202,24 +210,27 @@ const Checkout = () => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Phone</label>
-            <input
-              type="tel"
-              value={shippingAddress.phone}
-              onChange={(e) =>
-                setShippingAddress({
-                  ...shippingAddress,
-                  phone: e.target.value,
-                })
-              }
-              className="w-full p-2 border rounded"
-              required
-            />
+            <div className="flex items-center border rounded p-2">
+              <HiOutlinePhone className="text-gray-500 mr-2" />
+              <input
+                type="tel"
+                value={shippingAddress.phone}
+                onChange={(e) =>
+                  setShippingAddress({
+                    ...shippingAddress,
+                    phone: e.target.value,
+                  })
+                }
+                className="w-full outline-none"
+                required
+              />
+            </div>
           </div>
           <div className="mt-6">
             {!checkoutId ? (
               <button
                 type="submit"
-                className="w-full bg-black text-white py-3 rounded"
+                className="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition"
               >
                 Continue to Payment
               </button>
@@ -237,7 +248,7 @@ const Checkout = () => {
         </form>
       </div>
       {/* Right Section */}
-      <div className="bg-gray-50 p-6 rounded-lg">
+      <div className="bg-gray-50 p-6 rounded-lg shadow-md">
         <h3 className="text-lg mb-4">Order Summary</h3>
         <div className="border-t py-4 mb-4">
           {cart.products.map((product, index) => (
@@ -249,15 +260,19 @@ const Checkout = () => {
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-20 h-24 object-cover mr-4"
+                  className="w-20 h-24 object-cover mr-4 rounded"
                 />
                 <div>
-                  <h3 className="text-md">{product.name}</h3>
-                  <p className="text-gray-500">Size: {product.size}</p>
-                  <p className="text-gray-500">Color: {product.color}</p>
+                  <h3 className="text-md font-semibold">{product.name}</h3>
+                  <p className="text-gray-500 text-sm">Size: {product.size}</p>
+                  <p className="text-gray-500 text-sm">
+                    Color: {product.color}
+                  </p>
                 </div>
               </div>
-              <p className="text-xl">${product.price?.toLocaleString()}</p>
+              <p className="text-xl font-medium">
+                ${product.price?.toLocaleString()}
+              </p>
             </div>
           ))}
         </div>
@@ -267,9 +282,9 @@ const Checkout = () => {
         </div>
         <div className="flex justify-between items-center text-lg">
           <p>Shipping</p>
-          <p>Free</p>
+          <p className="text-green-600 font-semibold">Free</p>
         </div>
-        <div className="flex justify-between items-center text-lg mt-4 border-t pt-4">
+        <div className="flex justify-between items-center text-xl mt-4 border-t pt-4 font-bold">
           <p>Total</p>
           <p>${cart.totalPrice?.toLocaleString()}</p>
         </div>
@@ -277,4 +292,5 @@ const Checkout = () => {
     </div>
   );
 };
+
 export default Checkout;

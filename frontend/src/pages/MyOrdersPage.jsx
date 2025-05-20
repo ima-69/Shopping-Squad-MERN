@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux'; 
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserOrders } from '../redux/slices/orderSlice';
 
 const MyOrdersPage = () => {
-
-  const navigate =  useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { orders, loading, error } = useSelector((state) => state.orders);
 
@@ -17,67 +16,86 @@ const MyOrdersPage = () => {
     navigate(`/order/${orderId}`);
   };
 
-  if (loading) return <p>Loading ...</p>
-  if (error) return <p>Error: {error}</p>
+  if (loading) return <p className="text-center text-gray-600 py-10">Loading orders...</p>;
+  if (error) return <p className="text-center text-red-500 py-10">Error: {error}</p>;
 
   return (
-    <div className='max-w-7xl mx-auto p-4 sm:p-6'>
-      <h2 className="text-xl sm:text-2xl font-bold mb-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <h2 className="text-3xl font-bold text-gray-900 mb-8">
         My Orders
       </h2>
-      <div className="relative shadow-md sm:rounded-lg overflow-hidden">
-        <table className="min-w-full text-left text-gray-500">
-          <thead className='bg-blue-100 text-xs uppercase text-gray-700'>
-            <tr>
-              <th className="py-2 px-4 sm:py-3">Image</th>
-              <th className="py-2 px-4 sm:py-3">Order ID</th>
-              <th className="py-2 px-4 sm:py-3">Created</th>
-              <th className="py-2 px-4 sm:py-3">Shipping Address</th>
-              <th className="py-2 px-4 sm:py-3">Items</th>
-              <th className="py-2 px-4 sm:py-3">Price</th>
-              <th className="py-2 px-4 sm:py-3">Status</th>
+
+      <div className="bg-white shadow-xl rounded-2xl overflow-hidden ring-1 ring-gray-200">
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-gray-50">
+            <tr className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              <th className="px-6 py-4">Image</th>
+              <th className="px-6 py-4">Order ID</th>
+              <th className="px-6 py-4">Created</th>
+              <th className="px-6 py-4">Shipping Address</th>
+              <th className="px-6 py-4">Items</th>
+              <th className="px-6 py-4">Total</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4"></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-100">
             {orders.length > 0 ? (
               orders.map((order) => (
-                <tr 
-                  key={order._id} 
-                  onClick={() => handleRowClick(order._id)}
-                  className="cursor-pointer border-b border-gray-300 hover:border-gray-50 curesor-pointer"
+                <tr
+                  key={order._id}
+                  className="group hover:bg-gray-50 transition duration-200"
                 >
-                  <td className="py-2 px-2 sm:py sm:px-4">
-                    <img src={order.orderItems[0].image} alt={order.orderItems[0].name} className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg" />
-                  </td>  
-                  <td className="py-2 px-2 sm:py-4 sm:px-4 font-medium text-gray-900 whitespace-nowrap">
-                    #{order._id}
+                  <td className="px-6 py-4">
+                    <img
+                      src={order.orderItems[0].image}
+                      alt={order.orderItems[0].name}
+                      className="w-12 h-12 object-cover rounded-md border"
+                    />
                   </td>
-                  <td className="py-2 px-2 sm:py-4 sm:px-4">
-                    {new Date(order.createdAt).toLocaleDateString()}{" "}
-                    {new Date(order.createdAt).toLocaleTimeString()}
+                  <td className="px-6 py-4 font-semibold text-gray-800">
+                    #{order._id.slice(-8).toUpperCase()}
                   </td>
-                  <td className="py-2 px-2 sm:py-4 sm:px-4">
-                    {order.shippingAddress ? `${order.shippingAddress.city}, ${order.shippingAddress.country}` : "N/A"}
+                  <td className="px-6 py-4 text-gray-600">
+                    {new Date(order.createdAt).toLocaleDateString()}<br />
+                    <span className="text-xs text-gray-400">
+                      {new Date(order.createdAt).toLocaleTimeString()}
+                    </span>
                   </td>
-                  <td className="py-2 px-2 sm:py-4 sm:px-4">
+                  <td className="px-6 py-4 text-gray-700">
+                    {order.shippingAddress?.city}, {order.shippingAddress?.country}
+                  </td>
+                  <td className="px-6 py-4 text-gray-700">
                     {order.orderItems.length}
                   </td>
-                  <td className="py-2 px-2 sm:py-4 sm:px-4">
+                  <td className="px-6 py-4 font-medium text-gray-800">
                     ${order.totalPrice}
                   </td>
-                  <td className="py-2 px-2 sm:py-4 sm:px-4">
-                    <span 
-                      className={`${order.isPaid ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"} px-2 py-1 rounded-full text-xs sm:text-sm font-medium`}
+                  <td className="px-6 py-4">
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                        order.isPaid
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-red-100 text-red-600'
+                      }`}
                     >
-                      {order.isPaid ? "Paid" : "Pending"}
+                      {order.isPaid ? 'Paid' : 'Pending'}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button
+                      onClick={() => handleRowClick(order._id)}
+                      className="opacity-0 group-hover:opacity-100 bg-indigo-600 text-white text-xs font-medium py-2 px-4 rounded-lg transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
+                    >
+                      View Order
+                    </button>
                   </td>
                 </tr>
               ))
-            ):(
+            ) : (
               <tr>
-                <td colSpan={7} className="py-4 px-4 text-center text-gray-500">
-                  You have no orders
+                <td colSpan={8} className="text-center py-10 text-gray-400">
+                  You have no orders yet.
                 </td>
               </tr>
             )}
@@ -85,7 +103,7 @@ const MyOrdersPage = () => {
         </table>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MyOrdersPage
+export default MyOrdersPage;

@@ -11,7 +11,7 @@ const Hero = () => {
         alt="squad"
         className="w-full h-[400px] md:h-[600px] lg:h-[750px] object-cover"
       />
-      {/* Overlay for better contrast */}
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black/50"></div>
 
       {/* Content */}
@@ -24,7 +24,7 @@ const Hero = () => {
             Explore our vacation-ready outfits with fast worldwide shipping.
           </p>
           <Link
-            to="#"
+            to="/collections/all"
             className="
               inline-block 
               bg-white 
