@@ -1,143 +1,168 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { TbBrandMeta } from 'react-icons/tb'
-import { IoLogoInstagram } from 'react-icons/io'
-import { RiTwitterXLine } from 'react-icons/ri'
-import { FiPhoneCall } from 'react-icons/fi'
+import React from "react";
+import { Link } from "react-router-dom";
+import { TbBrandFacebook } from "react-icons/tb";
+import { IoLogoInstagram } from "react-icons/io";
+import { FaTwitter } from "react-icons/fa";
+import { FiPhoneCall } from "react-icons/fi";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-gray-200 py-14 px-6 bg-white">
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-20 max-w-7xl">
-        
+    <footer className="bg-[#12182B] text-[#A9ADC1] py-16 px-4">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-16">
         {/* Newsletter */}
-        <div className="mr-12">
-          <h3 className="text-xl font-semibold text-gray-800 mb-5">Newsletter</h3>
-          <p className="text-gray-600 mb-3">
+        <div>
+          <h3 className="text-white text-xl font-semibold mb-5 tracking-wide">
+            Newsletter
+          </h3>
+          <p className="mb-4 leading-relaxed text-base">
             Be the first to hear about new products, exclusive events, and online offers.
           </p>
-          <p className="font-medium text-sm text-gray-500 mb-6">
-            Sign up and get 10% off on your first order.
+          <p className="mb-6 text-base">
+            Sign up and get{" "}
+            <span className="font-semibold text-[#4F46E5]">10% off</span> on your first order.
           </p>
-
-          <form className="flex">
+          <form className="flex max-w-md">
             <input
               type="email"
               placeholder="Enter your email"
               required
-              className="flex-grow p-3 text-sm border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+              className="flex-grow px-4 py-3 bg-[#252D44] border-none text-white placeholder-[#A9ADC1] focus:outline-none focus:ring-2 focus:ring-[#4F46E5] rounded-none rounded-l-md"
             />
             <button
               type="submit"
-              className="bg-indigo-600 text-white px-5 py-3 rounded-r-md text-sm font-semibold hover:bg-indigo-700 active:bg-indigo-800 transition-transform transform hover:scale-105 cursor-pointer"
+              className="bg-[#4F46E5] text-white px-6 py-3 rounded-r-md font-semibold hover:bg-indigo-600 active:bg-indigo-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#4F46E5]"
             >
               Subscribe
             </button>
           </form>
         </div>
 
-        {/* Shop Links */}
+        {/* Shop */}
         <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-5">Shop</h3>
-          <ul className="space-y-3 text-gray-600">
+          <h3 className="text-white text-xl font-semibold mb-5 tracking-wide">Shop</h3>
+          <ul className="space-y-3 text-[#A9ADC1] text-base">
             <li>
-              <Link to="/collections/all?gender=Men" className="hover:text-indigo-600 transition-colors">
+              <Link
+                to="/collections/all?gender=Men"
+                className="hover:text-[#4F46E5] transition-colors duration-300"
+              >
                 Men's Top Wear
               </Link>
             </li>
             <li>
-              <Link to="/collections/all?gender=Women" className="hover:text-indigo-600 transition-colors">
+              <Link
+                to="/collections/all?gender=Women"
+                className="hover:text-[#4F46E5] transition-colors duration-300"
+              >
                 Women's Top Wear
               </Link>
             </li>
             <li>
-              <Link to="/collections/all?category=Top Wear" className="hover:text-indigo-600 transition-colors">
+              <Link
+                to="/collections/all?category=Top Wear"
+                className="hover:text-[#4F46E5] transition-colors duration-300"
+              >
                 Men's Bottom Wear
               </Link>
             </li>
             <li>
-              <Link to="/collections/all?category=Bottom Wear" className="hover:text-indigo-600 transition-colors">
+              <Link
+                to="/collections/all?category=Bottom Wear"
+                className="hover:text-[#4F46E5] transition-colors duration-300"
+              >
                 Women's Bottom Wear
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Support Links */}
+        {/* Support */}
         <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-5">Support</h3>
-          <ul className="space-y-3 text-gray-600">
+          <h3 className="text-white text-xl font-semibold mb-5 tracking-wide">Support</h3>
+          <ul className="space-y-3 text-[#A9ADC1] text-base">
             <li>
-              <Link to="#" className="hover:text-indigo-600 transition-colors">
+              <Link
+                to="#"
+                className="hover:text-[#4F46E5] transition-colors duration-300"
+              >
                 Contact Us
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:text-indigo-600 transition-colors">
+              <Link
+                to="#"
+                className="hover:text-[#4F46E5] transition-colors duration-300"
+              >
                 About Us
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:text-indigo-600 transition-colors">
+              <Link
+                to="#"
+                className="hover:text-[#4F46E5] transition-colors duration-300"
+              >
                 FAQs
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:text-indigo-600 transition-colors">
+              <Link
+                to="#"
+                className="hover:text-[#4F46E5] transition-colors duration-300"
+              >
                 Features
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Social Links */}
+        {/* Follow Us & Contact */}
         <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-5">Follow Us</h3>
-          <div className="flex items-center space-x-6 mb-6 text-gray-700">
+          <h3 className="text-white text-xl font-semibold mb-5 tracking-wide">Follow Us</h3>
+          <div className="flex items-center space-x-6 mb-6 text-[#A9ADC1]">
             <a
               href="https://www.facebook.com"
               target="_blank"
-              rel="noreferrer noopener"
-              className="hover:text-indigo-600 transition transform hover:scale-110"
+              rel="noopener noreferrer"
+              className="hover:text-[#4F46E5] transition transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#4F46E5] rounded"
               aria-label="Facebook"
             >
-              <TbBrandMeta className="h-7 w-7" />
+              <TbBrandFacebook className="h-6 w-6" />
             </a>
             <a
               href="https://www.instagram.com"
               target="_blank"
-              rel="noreferrer noopener"
-              className="hover:text-indigo-600 transition transform hover:scale-110"
+              rel="noopener noreferrer"
+              className="hover:text-[#4F46E5] transition transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#4F46E5] rounded"
               aria-label="Instagram"
             >
-              <IoLogoInstagram className="h-7 w-7" />
+              <IoLogoInstagram className="h-6 w-6" />
             </a>
             <a
-              href="https://www.x.com"
+              href="https://www.twitter.com"
               target="_blank"
-              rel="noreferrer noopener"
-              className="hover:text-indigo-600 transition transform hover:scale-110"
+              rel="noopener noreferrer"
+              className="hover:text-[#4F46E5] transition transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#4F46E5] rounded"
               aria-label="Twitter"
             >
-              <RiTwitterXLine className="h-6 w-6" />
+              <FaTwitter className="h-6 w-6" />
             </a>
           </div>
-          <p className="text-gray-500 font-medium">Call Us</p>
-          <p className="flex items-center text-gray-700 font-semibold mt-1">
-            <FiPhoneCall className="inline-block mr-2 h-5 w-5" />
-            0123-456-789
+          <p className="text-[#A9ADC1] font-semibold mb-1">Call Us</p>
+          <p className="flex items-center text-[#4F46E5] font-semibold text-lg space-x-2">
+            <FiPhoneCall className="inline-block h-5 w-5" />
+            <span>0123-456-789</span>
           </p>
         </div>
       </div>
 
-      {/* Bottom Footer */}
-      <div className="container mx-auto border-t border-gray-200 mt-14 px-6 max-w-7xl pt-6">
-        <p className="text-gray-500 text-sm text-center tracking-wide font-light">
-          &copy; 2025, Squad. All Rights Reserved.
+      {/* Bottom Copyright */}
+      <div className="max-w-7xl mx-auto border-t border-[#2A2F47] mt-12 pt-6 px-6 select-none">
+        <p className="text-[#5B5F7E] text-center text-sm tracking-wide font-light">
+          &copy; 2025, Fashion Squad. All Rights Reserved.
         </p>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

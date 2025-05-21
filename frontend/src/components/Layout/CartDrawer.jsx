@@ -1,33 +1,39 @@
-import React from 'react'
-import { HiX, HiShoppingCart } from 'react-icons/hi'
-import { FiCreditCard, FiShoppingCart } from 'react-icons/fi'
-import CartContent from '../Cart/CartContent'
-import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import React from "react";
+import { HiX, HiShoppingCart } from "react-icons/hi";
+import { FiCreditCard, FiShoppingCart } from "react-icons/fi";
+import CartContent from "../Cart/CartContent";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+const HEADER_HEIGHT = 108; 
 
 const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
-  const navigate = useNavigate()
-  const { user, guestId } = useSelector((state) => state.auth)
-  const { cart } = useSelector((state) => state.cart)
-  const userId = user ? user._id : null
+  const navigate = useNavigate();
+  const { user, guestId } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+  const userId = user ? user._id : null;
 
   const handleCheckout = () => {
-    toggleCartDrawer()
+    toggleCartDrawer();
     if (!user) {
-      navigate('/login?redirect=checkout')
+      navigate("/login?redirect=checkout");
     } else {
-      navigate('/checkout')
+      navigate("/checkout");
     }
-  }
+  };
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full bg-white shadow-2xl w-4/5 sm:w-3/5 md:w-[28rem] flex flex-col z-50 transform transition-transform duration-300 ${
-        drawerOpen ? 'translate-x-0' : 'translate-x-full'
+      className={`fixed right-0 bg-white shadow-2xl w-4/5 sm:w-3/5 md:w-[28rem] flex flex-col transform transition-transform duration-300 z-50 ${
+        drawerOpen ? "translate-x-0" : "translate-x-full"
       }`}
       role="dialog"
       aria-modal="true"
       aria-label="Shopping cart drawer"
+      style={{
+        top: HEADER_HEIGHT,
+        height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+      }}
     >
       {/* Close Button */}
       <div className="flex justify-end p-5 border-b border-gray-200">
@@ -74,7 +80,7 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CartDrawer
+export default CartDrawer;

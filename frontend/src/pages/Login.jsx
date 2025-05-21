@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import login from "../assets/login.webp";
 import { loginUser } from "../redux/slices/authSlice";
@@ -11,6 +11,9 @@ import axios from 'axios';
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const passwordRef = useRef(null); // Reference to password input
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,9 +35,28 @@ const Login = () => {
     }
   }, [user, guestId, cart, navigate, isCheckoutRedirect, dispatch]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }));
+
+    // Input validation
+    if (!email.trim() || !password.trim()) {
+      setError("All fields are required.");
+      return;
+    }
+
+    try {
+      await dispatch(loginUser({ email, password })).unwrap();
+      setError(null);
+    } catch (err) {
+      setError("Invalid email or password.");
+    }
+  };
+
+  const handleEmailKeyDown = (e) => {
+    if (e.key === "Enter" && passwordRef.current) {
+      e.preventDefault();
+      passwordRef.current.focus(); // Move focus to password field
+    }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
@@ -51,7 +73,6 @@ const Login = () => {
 
       localStorage.setItem('userInfo', JSON.stringify(response.data.user));
       localStorage.setItem('userToken', response.data.token);
-
       dispatch({ type: 'auth/loginSuccess', payload: response.data.user });
 
       if (cart?.products.length > 0 && guestId) {
@@ -62,90 +83,84 @@ const Login = () => {
         navigate(isCheckoutRedirect ? '/checkout' : '/');
       }
     } catch (error) {
-      console.error('Google login error:', error);
+      setError("Google login failed. Try again.");
     }
   };
 
   const handleGoogleError = () => {
-    console.log('Google login failed');
+    setError("Google login failed. Try again.");
   };
 
   return (
-    <div className="flex">
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12">
+    <div className="flex min-h-screen bg-gray-50">
+      <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-10">
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-md bg-white p-8 rounded-lg border shadow-sm"
+          className="w-full max-w-md bg-white p-10 rounded-xl shadow-md"
         >
-          <div className="flex justify-center mb-6">
-            <h2 className="text-xl font-medium">FASHION SQUAD</h2>
-          </div>
-          <h2 className="text-2xl font-bold text-center mb-6">Hey there! 👋🏻</h2>
-          <p className="text-center mb-6">
-            Enter your username and password to Login.
-          </p>
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Welcome Back</h2>
+          <p className="text-center text-sm text-gray-500 mb-6">Login to your account</p>
+
+          {error && (
+            <div className="bg-red-100 text-red-600 p-2 rounded mb-4 text-center">
+              {error}
+            </div>
+          )}
+
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded"
-              placeholder="Enter your email address"
+              onKeyDown={handleEmailKeyDown}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="Enter your email"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2">Password</label>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
+              ref={passwordRef}
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Enter your password"
             />
           </div>
+
           <button
             type="submit"
-            className="w-full bg-black text-white p-2 rounded-lg font-semibold hover:bg-gray-800 transition"
+            className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition"
           >
-            {loading ? "loading..." : "Sign In"}
+            {loading ? "Loading..." : "Sign In"}
           </button>
 
-          {/* Google Login Button */}
-          <div className="mt-4">
-            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleError}
-                useOneTap
-                text="continue_with"
-                shape="rectangular"
-                size="large"
-                width="100%"
-              />
-            </GoogleOAuthProvider>
-          </div>
+          <div className="my-6 text-center text-gray-500">or</div>
 
-          <p className="mt-6 text-center text-sm">
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              text="continue_with"
+              shape="rectangular"
+              size="large"
+              width="100%"
+            />
+          </GoogleOAuthProvider>
+
+          <p className="mt-6 text-center text-sm text-gray-500">
             Don't have an account?{" "}
-            <Link
-              to={`/register?redirect=${encodeURIComponent(redirect)}`}
-              className="text-blue-500"
-            >
+            <Link to={`/register?redirect=${encodeURIComponent(redirect)}`} className="text-blue-600 hover:underline">
               Register
             </Link>
           </p>
         </form>
       </div>
 
-      <div className="hidden md:block w-1/2 bg-gray-800">
-        <div className="h-full flex flex-col justify-center items-center">
-          <img
-            src={login}
-            alt="Login to Account"
-            className="h-[750px] w-full object-cover"
-          />
-        </div>
+      <div className="hidden md:block w-1/2">
+        <img src={login} alt="Login visual" className="h-screen w-full object-cover" />
       </div>
     </div>
   );

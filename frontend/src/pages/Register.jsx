@@ -1,17 +1,23 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import register from "../assets/register.webp";
 import { registerUser } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { mergeCart } from "../redux/slices/cartSlice";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import axios from 'axios';
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const formRef = useRef(null);
+  const [formHeight, setFormHeight] = useState(0);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,6 +26,18 @@ const Register = () => {
 
   const redirect = new URLSearchParams(location.search).get("redirect") || "/";
   const isCheckoutRedirect = redirect.includes("checkout");
+
+  // Measure form container height on mount and resize
+  useEffect(() => {
+    const updateHeight = () => {
+      if (formRef.current) {
+        setFormHeight(formRef.current.offsetHeight);
+      }
+    };
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -33,9 +51,22 @@ const Register = () => {
     }
   }, [user, guestId, cart, navigate, isCheckoutRedirect, dispatch]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(registerUser({ name, email, password }));
+    if (!name || !email || !password || !confirmPassword) {
+      setError("All fields are required.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    try {
+      await dispatch(registerUser({ name, email, password })).unwrap();
+      setError(null);
+    } catch (err) {
+      setError("Registration failed. Try a different email.");
+    }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
@@ -49,12 +80,9 @@ const Register = () => {
           name: decoded.name,
         }
       );
-
       localStorage.setItem('userInfo', JSON.stringify(response.data.user));
       localStorage.setItem('userToken', response.data.token);
-
       dispatch({ type: 'auth/loginSuccess', payload: response.data.user });
-
       if (cart?.products.length > 0 && guestId) {
         dispatch(mergeCart({ guestId, user: response.data.user })).then(() => {
           navigate(isCheckoutRedirect ? '/checkout' : '/');
@@ -63,85 +91,112 @@ const Register = () => {
         navigate(isCheckoutRedirect ? '/checkout' : '/');
       }
     } catch (error) {
-      console.error('Google login error:', error);
+      setError("Google registration failed. Try again.");
     }
   };
 
   const handleGoogleError = () => {
-    console.log('Google login failed');
+    setError("Google registration failed.");
   };
 
   return (
-    <div className="flex">
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12">
+    <div className="flex min-h-screen bg-gray-50 items-start">
+      {/* Form Container */}
+      <div
+        ref={formRef}
+        className="w-full md:w-1/2 flex items-start justify-center px-6 py-10"
+      >
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-md bg-white p-8 rounded-lg border shadow-sm"
+          className="w-full max-w-md bg-white p-10 rounded-xl shadow-md"
         >
-          <div className="flex justify-center mb-6">
-            <h2 className="text-xl font-medium">FASHION SQUAD</h2>
-          </div>
-          <h2 className="text-2xl font-bold text-center mb-6">Join us today! 🚀</h2>
-          <p className="text-center mb-6">
-            Create your account to start shopping.
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
+            Create Account
+          </h2>
+          <p className="text-center text-sm text-gray-500 mb-6">
+            Join us and start shopping
           </p>
+
+          {error && (
+            <div className="bg-red-100 text-red-600 p-2 rounded mb-4 text-center">
+              {error}
+            </div>
+          )}
+
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Enter your name"
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded"
-              placeholder="Enter your email address"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="Enter your email"
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Enter your password"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-black text-white p-2 rounded-lg font-semibold hover:bg-gray-800 transition"
-          >
-            {loading ? "loading..." : "Sign Up"}
-          </button>
-
-          {/* Google Signup Option */}
-          <div className="mt-4">
-            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleError}
-                useOneTap
-                text="continue_with"
-                shape="rectangular"
-                size="large"
-                width="100%"
-              />
-            </GoogleOAuthProvider>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="Confirm your password"
+            />
           </div>
 
-          <p className="mt-6 text-center text-sm">
+          <button
+            type="submit"
+            className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition"
+          >
+            {loading ? "Loading..." : "Sign Up"}
+          </button>
+
+          <div className="my-6 text-center text-gray-500">or</div>
+
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              text="continue_with"
+              shape="rectangular"
+              size="large"
+              width="100%"
+            />
+          </GoogleOAuthProvider>
+
+          <p className="mt-6 text-center text-sm text-gray-500">
             Already have an account?{" "}
             <Link
               to={`/login?redirect=${encodeURIComponent(redirect)}`}
-              className="text-blue-500"
+              className="text-blue-600 hover:underline"
             >
               Login
             </Link>
@@ -149,12 +204,16 @@ const Register = () => {
         </form>
       </div>
 
-      <div className="hidden md:block w-1/2 bg-gray-800">
-        <div className="h-full flex flex-col justify-center items-center">
+      {/* Image Container */}
+      <div
+        className="hidden md:block w-1/2"
+        style={{ height: formHeight ? `${formHeight}px` : "auto" }}
+      >
+        <div className="w-full h-full">
           <img
             src={register}
-            alt="Register for Account"
-            className="h-[750px] w-full object-cover"
+            alt="Register visual"
+            className="w-full h-full object-contain"
           />
         </div>
       </div>

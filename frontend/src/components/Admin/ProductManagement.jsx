@@ -22,44 +22,65 @@ const ProductManagement = () => {
     }
   };
 
-  if (loading) return <p>Loading ...</p>;
-  if (error) return <p>Error: {error}</p>;
-
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Product Management</h2>
-      <div className="overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="min-w-full text-left text-gray-500">
-          <thead className="bg-gray-100 text-xs uppercase text-gray-700">
+      <h2 className="text-3xl font-extrabold mb-8 text-gray-900">Product Management</h2>
+
+      {loading && <p className="text-gray-500 text-center mb-4">Loading...</p>}
+      {error && <p className="text-red-600 text-center mb-4">Error: {error}</p>}
+
+      <div className="bg-white shadow rounded-lg p-6 overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200 text-gray-700">
+          <thead className="bg-gray-50">
             <tr>
-              <th className="py-3 px-4">Name</th>
-              <th className="py-3 px-4">Price</th>
-              <th className="py-3 px-4">SKU</th>
-              <th className="py-3 px-4">Actions</th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide"
+              >
+                Name
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide"
+              >
+                Price
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide"
+              >
+                SKU
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide"
+              >
+                Actions
+              </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-100">
             {products.length > 0 ? (
               products.map((product) => (
                 <tr
                   key={product._id}
-                  className="border-b hover:bg-gray-50 cursor-pointer"
+                  className="hover:bg-gray-50 transition cursor-pointer"
                 >
-                  <td className="p-4 font-medium text-gray-900 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                     {product.name}
                   </td>
-                  <td className="p-4">${product.price}</td>
-                  <td className="p-4">{product.sku}</td>
-                  <td className="p-4">
+                  <td className="px-6 py-4 whitespace-nowrap">${product.price}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{product.sku}</td>
+                  <td className="px-6 py-4 whitespace-nowrap space-x-2">
                     <Link
                       to={`/admin/products/${product._id}/edit`}
-                      className="bg-yellow-500 text-white px-2 py-1 rounded mr-2 hover:bg-yellow-600"
+                      className="inline-block bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
                     >
                       Edit
                     </Link>
                     <button
                       onClick={() => handleDelete(product._id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                      className="inline-block bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 transition"
                     >
                       Delete
                     </button>
@@ -68,8 +89,11 @@ const ProductManagement = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="p-4 text-center text-gray-500">
-                  No Products found.
+                <td
+                  colSpan={4}
+                  className="px-6 py-6 text-center text-gray-500"
+                >
+                  No products found.
                 </td>
               </tr>
             )}
@@ -79,4 +103,5 @@ const ProductManagement = () => {
     </div>
   );
 };
+
 export default ProductManagement;
