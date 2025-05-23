@@ -70,10 +70,7 @@ const CollectionPage = () => {
             </div>
 
             {/* Main Content */}
-            <div
-                className="flex-grow p-4"
-                style={{ marginLeft: SIDEBAR_WIDTH, marginTop: 0 }}
-            >
+            <div className="flex-grow p-4 lg:ml-64">
                 <SortOptions />
                 <ProductGrid products={products} loading={loading} error={error} />
             </div>

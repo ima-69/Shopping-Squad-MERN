@@ -7,7 +7,7 @@ import { FiPhoneCall } from "react-icons/fi";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#12182B] text-[#A9ADC1] py-16 px-4">
+    <footer className="bg-[#12182B] text-[#A9ADC1] py-16 px-4 z-60">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-16">
         {/* Newsletter */}
         <div>

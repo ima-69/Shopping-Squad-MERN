@@ -38,7 +38,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={` top-10 left-0 w-full z-40 backdrop-blur-md transition-all duration-300 ${
+      <nav className={`top-10 left-0 w-full z-40 backdrop-blur-md transition-all duration-300  ${
         scrolled ? 'bg-white/60 shadow-md' : 'bg-white/90'
       }`}>
         <div className='container mx-auto flex items-center justify-between py-4 px-6'>
@@ -107,7 +107,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        <div className='p-6'>
+        <div className='p-6 z-700'>
           <nav className='space-y-6'>
             <MobileLink to='/collections/all?gender=Men' label='Men' icon={<BsGenderMale />} toggle={toggleNavDrawer} />
             <MobileLink to='/collections/all?gender=Women' label='Women' icon={<BsGenderFemale />} toggle={toggleNavDrawer} />
