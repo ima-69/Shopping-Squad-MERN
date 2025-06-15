@@ -36,7 +36,6 @@ const MyOrdersPage = () => {
               <th className="px-6 py-4">Items</th>
               <th className="px-6 py-4">Total</th>
               <th className="px-6 py-4">Status</th>
-              <th className="px-6 py-4"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -44,7 +43,8 @@ const MyOrdersPage = () => {
               orders.map((order) => (
                 <tr
                   key={order._id}
-                  className="group hover:bg-gray-50 transition duration-200"
+                  className="group hover:bg-gray-50 transition duration-200 cursor-pointer"
+                  onClick={() => handleRowClick(order._id)} // Trigger the row click when any row is clicked
                 >
                   <td className="px-6 py-4">
                     <img
@@ -82,19 +82,11 @@ const MyOrdersPage = () => {
                       {order.isPaid ? 'Paid' : 'Pending'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => handleRowClick(order._id)}
-                      className="opacity-0 group-hover:opacity-100 bg-indigo-600 text-white text-xs font-medium py-2 px-4 rounded-lg transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
-                    >
-                      View Order
-                    </button>
-                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={8} className="text-center py-10 text-gray-400">
+                <td colSpan={7} className="text-center py-10 text-gray-400">
                   You have no orders yet.
                 </td>
               </tr>

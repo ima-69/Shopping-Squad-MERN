@@ -71,18 +71,21 @@ const Register = () => {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const decoded = jwtDecode(credentialResponse.credential);
+      const decoded = jwtDecode(credentialResponse.credential);  // Decode the Google ID token
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/google-auth`,
         {
-          token: credentialResponse.credential,
-          email: decoded.email,
-          name: decoded.name,
+          token: credentialResponse.credential,  // Pass Google token
+          email: decoded.email,  // Email decoded from Google ID token
+          name: decoded.name,  // Name decoded from Google ID token
         }
       );
-      localStorage.setItem('userInfo', JSON.stringify(response.data.user));
-      localStorage.setItem('userToken', response.data.token);
-      dispatch({ type: 'auth/loginSuccess', payload: response.data.user });
+
+      localStorage.setItem('userInfo', JSON.stringify(response.data.user));  // Save user data
+      localStorage.setItem('userToken', response.data.token);  // Save JWT token
+      dispatch({ type: 'auth/loginSuccess', payload: response.data.user });  // Dispatch to Redux
+
+      // Handle cart merging and redirect
       if (cart?.products.length > 0 && guestId) {
         dispatch(mergeCart({ guestId, user: response.data.user })).then(() => {
           navigate(isCheckoutRedirect ? '/checkout' : '/');
@@ -94,6 +97,7 @@ const Register = () => {
       setError("Google registration failed. Try again.");
     }
   };
+
 
   const handleGoogleError = () => {
     setError("Google registration failed.");

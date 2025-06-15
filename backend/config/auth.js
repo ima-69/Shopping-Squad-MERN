@@ -15,23 +15,24 @@ passport.use(
         let user = await User.findOne({ email: profile.emails[0].value });
 
         if (user) {
-          // Update user if they signed up with email/password before
+          // If user is already present but has not registered with Google before
           if (!user.googleId) {
-            user.googleId = profile.id;
-            user.provider = 'google';
+            user.googleId = profile.id;  // Correctly store Google ID
+            user.provider = 'google';  // Mark as Google provider
             await user.save();
           }
           return done(null, user);
         }
 
-        // Create new user if they don't exist
-        user = await User.create({
+        // If user doesn't exist, create a new user
+        user = new User({
           name: profile.displayName,
           email: profile.emails[0].value,
-          googleId: profile.id,
-          provider: 'google',
+          googleId: profile.id,  // Store Google ID
+          provider: 'google',     // Provider set as Google
         });
 
+        await user.save();
         return done(null, user);
       } catch (err) {
         return done(err, null);

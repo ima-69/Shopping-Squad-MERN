@@ -11,7 +11,7 @@ const Header = () => {
       </div>
 
       {/* Navbar fixed below Topbar */}
-      <div className="fixed top-[40px] left-0 w-full z-40">
+      <div className="fixed top-[40px] left-0 w-full z-60">
         <Navbar />
       </div>
     </header>

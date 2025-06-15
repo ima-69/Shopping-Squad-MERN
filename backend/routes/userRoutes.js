@@ -110,27 +110,24 @@ router.post('/google-auth', async (req, res) => {
   const { token, email, name } = req.body;
 
   try {
-    // Verify the token with Google (optional additional verification)
-    // In production, you might want to verify the token with Google's API
-    
-    // Check if user exists
+    // Check if the user already exists by email
     let user = await User.findOne({ email });
 
     if (!user) {
-      // Create new user if they don't exist
+      // If user doesn't exist, create a new user with Google details
       user = new User({
         name,
         email,
         provider: 'google',
-        googleId: token, // Or extract Google ID from token
+        googleId: token,  // Store the token as the Google ID (or use profile.id if needed)
       });
       await user.save();
     }
 
-    // Create JWT Payload
+    // Create JWT payload
     const payload = { user: { id: user._id, role: user.role } };
 
-    // Sign and return the token along with user data
+    // Sign the JWT token
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
@@ -154,5 +151,6 @@ router.post('/google-auth', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
 
 module.exports = router;
