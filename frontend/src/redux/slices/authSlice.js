@@ -1,3 +1,5 @@
+// frontend/src/redux/slices/authSlice.js
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -13,7 +15,7 @@ localStorage.setItem("guestId", initialGuestId);
 
 // Initial state
 const initialState = {
-  user: userFromStorage,
+  user: userFromStorage,  // Ensure the user is loaded from localStorage
   guestId: initialGuestId,
   loading: false,
   error: null,
@@ -28,6 +30,7 @@ export const loginUser = createAsyncThunk(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
         userData
       );
+      // Save to localStorage and update Redux state
       localStorage.setItem("userInfo", JSON.stringify(response.data.user));
       localStorage.setItem("userToken", response.data.token);
       return response.data.user;
@@ -61,7 +64,7 @@ export const googleLoginUser = createAsyncThunk(
   async ({ tokenId }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/google-login`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/google-auth`,
         { tokenId }
       );
       localStorage.setItem("userInfo", JSON.stringify(response.data.user));
