@@ -1,5 +1,3 @@
-// controllers/checkoutController.js
-
 const Checkout = require("../models/Checkout");
 const Cart = require("../models/Cart");
 const Order = require("../models/Order");
