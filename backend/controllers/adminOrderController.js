@@ -1,5 +1,3 @@
-// controllers/adminOrderController.js
-
 const Order = require("../models/Order");
 
 // @desc Get all orders (Admin only)
