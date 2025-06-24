@@ -1,5 +1,3 @@
-// controllers/adminUserController.js
-
 const User = require("../models/User");
 
 // @desc    Get all users (Admin only)
